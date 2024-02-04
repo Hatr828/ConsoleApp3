@@ -1,78 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleApp3
+class Program
 {
-    internal class Program
+    static void Main()
     {
-        static void Main(string[] args)
+        int N = 3;
+        int result = CountStairs(N);
+
+        Console.WriteLine($"Из {N} кубиков можно построить {result} ступеней.");
+    }
+
+    static int CountStairs(int N)
+    {
+        if (N <= 1)
         {
-            HW(10);
+            return N;
         }
-
-        static void HW(uint countSites)
+        else
         {
-            bool[] sites = new bool[countSites];
-
-            while (true)
-            {
-                int Input;
-                Console.WriteLine("Enter 1 for exit");
-                Input = Convert.ToInt32(Console.ReadLine());
-                if (Input == 1) { break; }
-
-                Console.WriteLine("Enter 1 for курящих");
-                Console.WriteLine("Enter 2 for некурящих");
-
-                Input = Convert.ToInt32(Console.ReadLine());
-
-                if (Input == 1) 
-                {
-                    bool Checker = false;
-                    for(int i = 0; i < Input / 2; i++)
-                    {
-                        if (sites[i] != true)
-                        {
-                            sites[i] = true;
-                            Checker = true;
-                            Console.WriteLine($"Пасажир посажин на место{i}");
-                            break;
-                        }
-                    }
-                    if (Checker == true)
-                    {
-                        continue;
-                    }
-                   Console.WriteLine($"no sites");
-
-                }
-                else if (Input == 2) 
-                {
-                    bool Checker = false;
-                    for (int i = 9; i >= countSites / 2; i--)
-                    {
-                        if (sites[i] != true)
-                        {
-                            sites[i] = true;
-                            Checker = true;
-                            Console.WriteLine($"Пасажир посажин на место{i}");
-                            break;
-                        }
-                    }
-                    if (Checker == true)
-                    {
-                        continue;
-                    }
-                    Console.WriteLine($"no sites");
-                }
-                else
-                {
-                    continue;
-                }
-            }
+            return N + CountStairs(N - 1);
         }
     }
 }
