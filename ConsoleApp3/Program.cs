@@ -1,24 +1,52 @@
 ﻿using System;
 
-class Program
+public struct Birthday
 {
-    static void Main()
-    {
-        int N = 3;
-        int result = CountStairs(N);
+    private DateTime birthDate;
 
-        Console.WriteLine($"Из {N} кубиков можно построить {result} ступеней.");
+    public Birthday(DateTime date)
+    {
+        birthDate = date;
     }
 
-    static int CountStairs(int N)
+    public void SetBirthDate(DateTime date)
     {
-        if (N <= 1)
-        {
-            return N;
-        }
-        else
-        {
-            return N + CountStairs(N - 1);
-        }
+        birthDate = date;
+    }
+
+    public DayOfWeek DayOfWeekOfBirth()
+    {
+        return birthDate.DayOfWeek;
+    }
+
+    public DayOfWeek DayOfWeekInYear(int year)
+    {
+        DateTime nextBirthday = new DateTime(year, birthDate.Month, birthDate.Day);
+        return nextBirthday.DayOfWeek;
+    }
+
+    public int DaysUntilBirthday()
+    {
+        DateTime today = DateTime.Today;
+        DateTime nextBirthday = new DateTime(today.Year, birthDate.Month, birthDate.Day);
+
+        if (nextBirthday < today)
+            nextBirthday = nextBirthday.AddYears(1);
+
+        return (nextBirthday - today).Days;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Birthday birthday = new Birthday(new DateTime(1990, 4, 1));
+
+        Console.WriteLine("День недели рождения: " + birthday.DayOfWeekOfBirth());
+        Console.WriteLine("День недели рождения в 2025 году: " + birthday.DayOfWeekInYear(2025));
+        Console.WriteLine("Дней до дня рождения: " + birthday.DaysUntilBirthday());
+
+        Console.ReadLine();
     }
 }
