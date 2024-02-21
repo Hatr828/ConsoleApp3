@@ -1,39 +1,65 @@
 ﻿using System;
 
-public struct Birthday
+class SquareMatrix      //Все новое нашёл в интернете
 {
-    private DateTime birthDate;
+    private int[,] matrix;
 
-    public Birthday(DateTime date)
+    public SquareMatrix(int[,] array)
     {
-        birthDate = date;
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);       
+
+        if (rows != cols)
+        {
+            throw new Exception("Не квадратная");
+        }
+
+        matrix = new int[rows, rows];
+        Array.Copy(array, matrix, array.Length);
     }
 
-    public void SetBirthDate(DateTime date)
+    public SquareMatrix ADD( SquareMatrix matrix2)
     {
-        birthDate = date;
+        int size = this.matrix.GetLength(0);
+        int[,] result = new int[size, size];
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                result[i, j] = this.matrix[i, j] + matrix2.matrix[i, j];
+            }
+        }
+
+        return new SquareMatrix(result);
     }
 
-    public DayOfWeek DayOfWeekOfBirth()
+    public SquareMatrix Minus(SquareMatrix matrix2)
     {
-        return birthDate.DayOfWeek;
+        int size = this.matrix.GetLength(0);
+        int[,] result = new int[size, size];
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                result[i, j] = this.matrix[i, j] - matrix2.matrix[i, j];
+            }
+        }
+
+        return new SquareMatrix(result);
     }
 
-    public DayOfWeek DayOfWeekInYear(int year)
+    public void PrintMatrix()
     {
-        DateTime nextBirthday = new DateTime(year, birthDate.Month, birthDate.Day);
-        return nextBirthday.DayOfWeek;
-    }
-
-    public int DaysUntilBirthday()
-    {
-        DateTime today = DateTime.Today;
-        DateTime nextBirthday = new DateTime(today.Year, birthDate.Month, birthDate.Day);
-
-        if (nextBirthday < today)
-            nextBirthday = nextBirthday.AddYears(1);
-
-        return (nextBirthday - today).Days;
+        int size = matrix.GetLength(0);
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                Console.Write(matrix[i, j] + "\t");
+            }
+        }
     }
 }
 
@@ -41,12 +67,32 @@ class Program
 {
     static void Main(string[] args)
     {
-        Birthday birthday = new Birthday(new DateTime(1990, 4, 1));
+        int[,] array1 = {
+            { 1, 2, 3 }, 
+            { 4, 5, 6 }, 
+            { 7, 8, 9 } 
+        };
+        int[,] array2 = { 
+            { 9, 8, 7 }, 
+            { 6, 5, 4 }, 
+            { 3, 2, 1 } 
+        };
 
-        Console.WriteLine("День недели рождения: " + birthday.DayOfWeekOfBirth());
-        Console.WriteLine("День недели рождения в 2025 году: " + birthday.DayOfWeekInYear(2025));
-        Console.WriteLine("Дней до дня рождения: " + birthday.DaysUntilBirthday());
+        SquareMatrix matrix1 = new SquareMatrix(array1);
+        SquareMatrix matrix2 = new SquareMatrix(array2);
 
-        Console.ReadLine();
+        Console.WriteLine("Матрица 1:");
+        matrix1.PrintMatrix();
+        Console.WriteLine("\nМатрица 2:");
+        matrix2.PrintMatrix();
+
+        SquareMatrix sum = matrix1.ADD(matrix2);
+        SquareMatrix minus = matrix1.Minus(matrix2);
+
+        Console.WriteLine("\nСумма матриц:");
+        sum.PrintMatrix();
+
+        Console.WriteLine("\nРазность матриц:");
+        minus.PrintMatrix();
     }
 }
