@@ -94,5 +94,6 @@ class Program
 
         Console.WriteLine("\nРазность матриц:");
         minus.PrintMatrix();
+        Console.ReadLine();
     }
 }
