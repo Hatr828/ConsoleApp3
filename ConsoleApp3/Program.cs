@@ -1,65 +1,43 @@
 ﻿using System;
 
-class SquareMatrix      //Все новое нашёл в интернете
+public class Deposit
 {
-    private int[,] matrix;
+    public virtual int Id { get; set; }
+    public virtual string OwnerFullName { get; set; }
+    public virtual decimal DepositAmount { get; set; }
+    public virtual int DepositTermMonths { get; set; }
+    public virtual decimal InterestRate { get; set; }
+    public virtual DateTime DepositDate { get; set; }
 
-    public SquareMatrix(int[,] array)
+    public virtual void GetInformation()
     {
-        int rows = array.GetLength(0);
-        int cols = array.GetLength(1);       
-
-        if (rows != cols)
-        {
-            throw new Exception("Не квадратная");
-        }
-
-        matrix = new int[rows, rows];
-        Array.Copy(array, matrix, array.Length);
+        Console.WriteLine($"ID: {Id}");
+        Console.WriteLine($"Owner's Full Name: {OwnerFullName}");
+        Console.WriteLine($"Deposit Amount: {DepositAmount}");
+        Console.WriteLine($"Deposit Term (months): {DepositTermMonths}");
+        Console.WriteLine($"Interest Rate: {InterestRate}");
+        Console.WriteLine($"Deposit Date: {DepositDate}");
     }
 
-    public SquareMatrix ADD( SquareMatrix matrix2)
+    public virtual decimal CloseDeposit()
     {
-        int size = this.matrix.GetLength(0);
-        int[,] result = new int[size, size];
+        return 0;
+    }
+}
 
-        for (int i = 0; i < size; i++)
+public class Credit : Deposit
+{
+    public override decimal InterestRate
+    {
+        get
         {
-            for (int j = 0; j < size; j++)
-            {
-                result[i, j] = this.matrix[i, j] + matrix2.matrix[i, j];
-            }
+           return 10;
         }
-
-        return new SquareMatrix(result);
     }
 
-    public SquareMatrix Minus(SquareMatrix matrix2)
+    public override decimal CloseDeposit()
     {
-        int size = this.matrix.GetLength(0);
-        int[,] result = new int[size, size];
-
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                result[i, j] = this.matrix[i, j] - matrix2.matrix[i, j];
-            }
-        }
-
-        return new SquareMatrix(result);
-    }
-
-    public void PrintMatrix()
-    {
-        int size = matrix.GetLength(0);
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                Console.Write(matrix[i, j] + "\t");
-            }
-        }
+        return base.DepositAmount * (1 + InterestRate / 100);
     }
 }
 
@@ -67,33 +45,35 @@ class Program
 {
     static void Main(string[] args)
     {
-        int[,] array1 = {
-            { 1, 2, 3 }, 
-            { 4, 5, 6 }, 
-            { 7, 8, 9 } 
+        Deposit deposit = new Deposit
+        {
+            Id = 1,
+            OwnerFullName = "gg",
+            DepositAmount = 1599999999,
+            DepositTermMonths = 999999999,
+            InterestRate = 0,
+            DepositDate = DateTime.Now
         };
-        int[,] array2 = { 
-            { 9, 8, 7 }, 
-            { 6, 5, 4 }, 
-            { 3, 2, 1 } 
+
+        deposit.GetInformation();
+
+        decimal amount = deposit.CloseDeposit();
+        Console.WriteLine($"Returned amount: {amount}");
+
+        Console.WriteLine();
+
+        Credit credit = new Credit
+        {
+            Id = 2,
+            OwnerFullName = "ggg",
+            DepositAmount = 2999999999999,
+            DepositTermMonths = 999999,
+            DepositDate = DateTime.Now
         };
 
-        SquareMatrix matrix1 = new SquareMatrix(array1);
-        SquareMatrix matrix2 = new SquareMatrix(array2);
+        credit.GetInformation();
 
-        Console.WriteLine("Матрица 1:");
-        matrix1.PrintMatrix();
-        Console.WriteLine("\nМатрица 2:");
-        matrix2.PrintMatrix();
-
-        SquareMatrix sum = matrix1.ADD(matrix2);
-        SquareMatrix minus = matrix1.Minus(matrix2);
-
-        Console.WriteLine("\nСумма матриц:");
-        sum.PrintMatrix();
-
-        Console.WriteLine("\nРазность матриц:");
-        minus.PrintMatrix();
-        Console.ReadLine();
+        amount = credit.CloseDeposit();
+        Console.WriteLine($"Returned amount: {amount}");
     }
 }
