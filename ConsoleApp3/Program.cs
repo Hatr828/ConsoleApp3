@@ -1,79 +1,80 @@
 ﻿using System;
 
-public class Deposit
+public class MyArray<T>
 {
-    public virtual int Id { get; set; }
-    public virtual string OwnerFullName { get; set; }
-    public virtual decimal DepositAmount { get; set; }
-    public virtual int DepositTermMonths { get; set; }
-    public virtual decimal InterestRate { get; set; }
-    public virtual DateTime DepositDate { get; set; }
+    private T[] _array;
+    private int _lenght;
 
-    public virtual void GetInformation()
+    public MyArray(T[] array, int lenght)
     {
-        Console.WriteLine($"ID: {Id}");
-        Console.WriteLine($"Owner's Full Name: {OwnerFullName}");
-        Console.WriteLine($"Deposit Amount: {DepositAmount}");
-        Console.WriteLine($"Deposit Term (months): {DepositTermMonths}");
-        Console.WriteLine($"Interest Rate: {InterestRate}");
-        Console.WriteLine($"Deposit Date: {DepositDate}");
+        _array = new T[lenght];
+        Array.Copy(array,_array,array.Length);
+        _lenght = lenght;
     }
 
-    public virtual decimal CloseDeposit()
-    {
-        return 0;
-    }
-}
-
-public class Credit : Deposit
-{
-    public override decimal InterestRate
+    public int Lenght
     {
         get
         {
-           return 10;
+            return _lenght;
         }
     }
 
-    public override decimal CloseDeposit()
+    public T this[int number]
     {
-        return base.DepositAmount * (1 + InterestRate / 100);
+        get
+        {
+            return _array[number];
+        }
+        set
+        {
+            _array[number] = value;
+        }
     }
-}
+
+    public void AddElement(T item)
+    {
+        T[] array = new T[_lenght + 1];
+        for (int i = 0; i < _lenght;i++)
+        {
+            array[i] = _array[i];
+        }
+        array[_lenght] = item;
+        _lenght++;
+        _array = array;
+    }
+
+    public void RemoveElement(int index)
+    {
+
+        T[] array = new T[_lenght + 1];
+        for (int i = 0; i < index; i++)
+        {
+            array[i] = _array[i];
+        }
+        for (int i = index; i < _lenght - 1; i++)
+        {
+            array[i] = _array[i + 1];
+        }
+        _lenght--;
+        _array = array;
+    }
+};
 
 class Program
 {
     static void Main(string[] args)
     {
-        Deposit deposit = new Deposit
-        {
-            Id = 1,
-            OwnerFullName = "gg",
-            DepositAmount = 1599999999,
-            DepositTermMonths = 999999999,
-            InterestRate = 0,
-            DepositDate = DateTime.Now
-        };
+        int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        MyArray<int> test = new MyArray<int>(arr,10);
 
-        deposit.GetInformation();
+        Console.WriteLine(test[8]);
+        test.AddElement(10);
 
-        decimal amount = deposit.CloseDeposit();
-        Console.WriteLine($"Returned amount: {amount}");
+        Console.WriteLine(test[10]);
+        test.RemoveElement(8);
 
-        Console.WriteLine();
-
-        Credit credit = new Credit
-        {
-            Id = 2,
-            OwnerFullName = "ggg",
-            DepositAmount = 2999999999999,
-            DepositTermMonths = 999999,
-            DepositDate = DateTime.Now
-        };
-
-        credit.GetInformation();
-
-        amount = credit.CloseDeposit();
-        Console.WriteLine($"Returned amount: {amount}");
+        Console.WriteLine(test[8]);
+        Console.ReadLine();
     }
 }
