@@ -1,80 +1,38 @@
 ﻿using System;
 
-public class MyArray<T>
+public class SendMessage
 {
-    private T[] _array;
-    private int _lenght;
+    public delegate void MessageSender(string message);
 
-    public MyArray(T[] array, int lenght)
+    public MessageSender Sender { get; set; }
+
+    public void Message(string message)
     {
-        _array = new T[lenght];
-        Array.Copy(array,_array,array.Length);
-        _lenght = lenght;
+        Sender?.Invoke(message);
     }
-
-    public int Lenght
-    {
-        get
-        {
-            return _lenght;
-        }
-    }
-
-    public T this[int number]
-    {
-        get
-        {
-            return _array[number];
-        }
-        set
-        {
-            _array[number] = value;
-        }
-    }
-
-    public void AddElement(T item)
-    {
-        T[] array = new T[_lenght + 1];
-        for (int i = 0; i < _lenght;i++)
-        {
-            array[i] = _array[i];
-        }
-        array[_lenght] = item;
-        _lenght++;
-        _array = array;
-    }
-
-    public void RemoveElement(int index)
-    {
-
-        T[] array = new T[_lenght + 1];
-        for (int i = 0; i < index; i++)
-        {
-            array[i] = _array[i];
-        }
-        for (int i = index; i < _lenght - 1; i++)
-        {
-            array[i] = _array[i + 1];
-        }
-        _lenght--;
-        _array = array;
-    }
-};
+}
 
 class Program
 {
+    static void MyMessage(string message)
+    {
+        Console.WriteLine($"gggggggg {message}");
+    }
+
     static void Main(string[] args)
     {
-        int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        MyArray<int> test = new MyArray<int>(arr,10);
+        SendMessage sender = new SendMessage();
 
-        Console.WriteLine(test[8]);
-        test.AddElement(10);
+        sender.Sender = MyMessage;
 
-        Console.WriteLine(test[10]);
-        test.RemoveElement(8);
+        sender.Sender?.Invoke("some text");
 
-        Console.WriteLine(test[8]);
+        sender.Sender = (message) =>
+        {
+            Console.WriteLine($"fffffff {message}");
+        };
+
+        sender.Message("text2");
         Console.ReadLine();
     }
 }
